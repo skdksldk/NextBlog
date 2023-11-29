@@ -25,7 +25,8 @@
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.3.2",
     "nanoid": "^4.0.2",
-    "next": "^14.0.3"
+    "next": "^14.0.3",
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
