@@ -6,9 +6,18 @@ import 'dotenv/config';
 import { nanoid } from 'nanoid'
 import jwt from 'jsonwebtoken';
 // mongoose data schemas.
-
+import admin from "firebase-admin";
+import { getAuth } from "firebase-admin/auth";
 import User from './Schema/User.js';
 
+// initializing the firebase
+
+import serviceAccountKey from "./next-f7741-firebase-adminsdk-qkw2l-d2f3f0f3f1.json" assert { type: "json" };
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccountKey)
+})
+  
 const server = express();
 const PORT = process.env.PORT || 3000;
 const slatRounds = 10; // slat rounds for bcryptjs
@@ -20,7 +29,6 @@ let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for pass
 mongoose.connect(process.env.DB_LOCATION, {
     autoIndex: true, 
 })
-
 
 // middlewares
 server.use(express.json()); // enable JSON sharing 
@@ -141,3 +149,56 @@ server.post('/signin', (req, res) => {
 server.listen(PORT, () => {
     console.log('listening on port -> ' + PORT)
 });
+
+server.post('/google-auth', async (req, res) => {
+    
+    let { accessToken } = req.body;
+
+    getAuth()
+    .verifyIdToken(accessToken)
+    .then(async (decodedToken) => {
+
+            let { email, name , picture } = decodedToken;
+
+            picture = picture.replace("s96-c", "s384-c")
+
+            let user = await User.findOne({ "personal_info.email": email }).select("personal_info.fullname personal_info.username personal_info.profile_img google_auth").then((u) => {
+                return u || null;
+            }).catch(err => {
+                return res.status(500).json({ error: err.message })
+            })
+
+            if(user) { // login
+                if (!user.google_auth){
+                    return res.status(403).json({ error: "This email was signed up without google. Please login with password to access the account"})
+                }
+            }
+            else { // signup
+
+                let username = await generateUsername(email);
+
+                user = new User({
+                    personal_info: { fullname: name, email, username, profile_img: picture },
+                    google_auth: true,
+                })
+            
+                await user.save().then((u) => {
+                    console.log(u)
+                    user = u;
+
+                }).catch(err => {
+                    return res.status(500).json({ error: err.message })
+                })
+
+            }
+            
+            return res.status(200).json(formatLoginDataTojson(user));
+
+    })
+    .catch((err) => {
+        // Handle err
+        console.log(err.message);
+        return res.status(500).json({ error: 'Failed to authenticate you with google. Try with some other google account' });
+    });
+})
+

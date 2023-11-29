@@ -7,6 +7,7 @@ import AnimationWrapper from "../common/animation";
 import { storeInSession } from "../common/session";
 import { useContext } from "react";
 import { UserContext } from "../App";
+import { authWithGoogle } from "../common/firebase";
 
 const UserAuthForm = ({ type }) => {
 
@@ -27,7 +28,7 @@ const UserAuthForm = ({ type }) => {
 
         })
         .catch(({ response }) => {
-            // console.log(response);
+            console.log(response);
             toast.error(response.data.error);
         })
 
@@ -78,6 +79,27 @@ const UserAuthForm = ({ type }) => {
 
         userAuthThroughServer(formData, serverRoute);
 
+    }
+
+    
+    const handleGoogleAuth = (e) => {
+        e.preventDefault()
+
+        authWithGoogle().then(user => {
+            let serverRoute = '/google-auth';
+        
+            let formData = {
+                accessToken: user.accessToken
+            }
+    
+            userAuthThroughServer(formData, serverRoute);
+        })
+
+        .catch(err => {
+            toast.error('trouble login in through google')
+          
+            return console.log('trouble login in through google =>', err)
+        })
     }
 
     return (
@@ -132,6 +154,7 @@ const UserAuthForm = ({ type }) => {
    
                    <button
                        className="btn-dark flex items-center justify-center gap-4 w-[90%] center"
+                       onClick={handleGoogleAuth}
                    >
                        <img src={google} className="w-5" />
                        Continue with google
