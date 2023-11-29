@@ -5,17 +5,25 @@ import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
 import AnimationWrapper from "../common/animation";
 import { storeInSession } from "../common/session";
+import { useContext } from "react";
+import { UserContext } from "../App";
 
 const UserAuthForm = ({ type }) => {
 
+    let { userAuth: { access_token }, setUserAuth } = useContext(UserContext);
+
+    console.log(access_token);
+    
     const userAuthThroughServer = (formData, serverRoute) => {
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
         .then(({ data }) => {
 
             storeInSession("user", JSON.stringify(data));
+
+            setUserAuth(data)
             
-            console.log(sessionStorage)
+            // console.log(sessionStorage)
 
         })
         .catch(({ response }) => {
@@ -73,9 +81,11 @@ const UserAuthForm = ({ type }) => {
     }
 
     return (
-
+        access_token ? 
+        <Navigate to="/" />
+        :
         <AnimationWrapper>
-        <section className="h-cover flex items-center justify-center">
+         <section className="h-cover flex items-center justify-center">
             <Toaster />
             <form className="w-[80%] max-w-[400px]" id="formElement">
                <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
@@ -148,7 +158,7 @@ const UserAuthForm = ({ type }) => {
                        </p>       
                    }  
            </form>
-        </section>
+         </section>
        </AnimationWrapper> 
         
     );
