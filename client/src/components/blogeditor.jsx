@@ -2,13 +2,30 @@ import { Link } from "react-router-dom";
 import logo from "../imgs/logo.png"
 import AnimationWrapper from "../common/animation";
 import defaultBanner from "../imgs/blog banner.png";
+import { useRef } from "react";
+import { uploadImage } from "../common/aws";
+import { Toaster, toast } from "react-hot-toast";
 
 const BlogEditor = () => {
+
+    let blogBannerRef = useRef();
 
     const handleBannerUpload = (e) => {
       let img = e.target.files[0];
 
-      console.log(img);
+      if(img){
+
+        let loadingToast = toast.loading("Uploading...")
+
+        uploadImage(img).then((url) => {
+            if(url){
+                
+                toast.dismiss(loadingToast)
+                toast.success("Uploaded");
+                blogBannerRef.current.src = url
+            }
+        })
+      }
     };
 
     return (
@@ -35,7 +52,7 @@ const BlogEditor = () => {
                 </div>
             </nav>
 
-          
+            <Toaster />
             <AnimationWrapper>
                 <section>
                     <div className="mx-auto max-w-[900px] w-full">
@@ -46,6 +63,7 @@ const BlogEditor = () => {
                             >
                                 <img
                                     className="z-20"
+                                    ref={blogBannerRef}
                                     src={defaultBanner}
                                 />
                                 <input
