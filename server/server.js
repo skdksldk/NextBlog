@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import admin from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 import User from './Schema/User.js';
+import aws from "aws-sdk";
 
 // initializing the firebase
 
@@ -34,12 +35,30 @@ mongoose.connect(process.env.DB_LOCATION, {
 server.use(express.json()); // enable JSON sharing 
 server.use(cors());
 
-const formatLoginDataTojson = (user) => {
-    // Ensure that process.env.SECRET_ACCESS_KEY is defined and not empty
-    if (!process.env.SECRET_ACCESS_KEY) {
-        throw new Error("SECRET_ACCESS_KEY is missing or empty");
-    }
+// AWS setup
+const s3 = new aws.S3({
+    region: 'ap-northeast-2',
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
 
+// functions
+// generate link to upload image
+const generateUploadURL = async () => {
+
+    const date = new Date();
+    const imageName = `${nanoid()}-${date.getTime()}.jpeg`;
+
+    return await s3.getSignedUrlPromise('putObject', {
+        Bucket: 'next-kim-blog', 
+        Key: imageName, 
+        Expires: 1000, 
+        ContentType: 'image/jpeg'
+    })
+
+}
+
+const formatLoginDataTojson = (user) => {
     // Sign the JWT token with the correct secret key
     const access_token = jwt.sign({ id: user._id }, process.env.SECRET_ACCESS_KEY);
 
@@ -62,6 +81,16 @@ const generateUsername = async (email) => {
 
     return username;
 }
+
+// server routes
+
+server.get('/get-upload-url', (req, res) => {
+    generateUploadURL().then(url => res.status(200).json({ uploadURL: url }))
+    .catch(err => {
+        console.log(err.message);
+        return res.status(200).json({ error: err.message })
+    })
+})
 
 
 server.post('/signup', (req, res) => {
