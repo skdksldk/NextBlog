@@ -25,8 +25,26 @@ const BlogEditor = () => {
                 blogBannerRef.current.src = url
             }
         })
+        .catch(err => {
+            toast.dismiss(loadingToast);
+            return toast.error(err);
+        })
       }
     };
+
+    const handleTitleKeyStroke = (e) => {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    };
+
+    const handleTitleChange = (e) => {
+        let input = e.target;
+
+        input.style.height = null;
+        input.style.height = input.scrollHeight + "px";
+    };
+
 
     return (
         <>
@@ -75,6 +93,15 @@ const BlogEditor = () => {
                                 />
                             </label>
                         </div>
+
+                        <textarea
+                            placeholder="Blog Title"
+                            onKeyDown={handleTitleKeyStroke}
+                            className="text-4xl font-medium placeholder:opacity-40 w-full h-20 outline-none resize-none mt-10 leading-tight"
+                            onChange={handleTitleChange}
+                        ></textarea>
+
+
                     </div>
                 </section>
             </AnimationWrapper>
