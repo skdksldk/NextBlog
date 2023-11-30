@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { EditorContext } from "../pages/editor";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.png"
 import EditorJS from "@editorjs/editorjs";
 import { tools } from "./tools";
@@ -8,24 +8,28 @@ import { Toaster, toast } from "react-hot-toast";
 import { uploadImage } from "../common/aws";
 import defaultBanner from "../imgs/blog banner.png";
 import axios from "axios";
+import { UserContext } from "../App";
 import AnimationWrapper from "../common/animation";
 
 const BlogEditor = () => {
 
-    let { blog, blog: { title, des, banner, content, tags }, setBlog } = 
-    useContext(EditorContext);
-    
+    let { blog, blog: { title, des, banner, content, tags }, setBlog, textEditor, setTextEditor, setEditorState } = useContext(EditorContext);
+
+    let { userAuth: { access_token } } = useContext(UserContext);
+    let { blog_id } = useParams();
     let blogBannerRef = useRef();
+
+    let navigate = useNavigate();
 
     // let editorJS;
 
     useEffect(() => {
-        let editor = new EditorJS({
+        setTextEditor(new EditorJS({
             holderId: "textEditor",
             tools: tools,
-            data: '',
+            data: Array.isArray(content) ? content[0] : content,
             placeholder: "Let`s write an awesome story!",
-        })
+        }))
     }, [])
 
     const handleBannerUpload = (e) => {
