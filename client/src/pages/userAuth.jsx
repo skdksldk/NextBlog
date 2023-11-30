@@ -1,5 +1,4 @@
 import InputBox from "../components/input";
-import google from "../imgs/google.png";
 import { Link, Navigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
@@ -7,7 +6,6 @@ import AnimationWrapper from "../common/animation";
 import { storeInSession } from "../common/session";
 import { useContext } from "react";
 import { UserContext } from "../App";
-import { authWithGoogle } from "../common/firebase";
 
 const UserAuthForm = ({ type }) => {
 
@@ -81,27 +79,6 @@ const UserAuthForm = ({ type }) => {
 
     }
 
-    
-    const handleGoogleAuth = (e) => {
-        e.preventDefault()
-
-        authWithGoogle().then(user => {
-            let serverRoute = '/google-auth';
-        
-            let formData = {
-                accessToken: user.accessToken
-            }
-    
-            userAuthThroughServer(formData, serverRoute);
-        })
-
-        .catch(err => {
-            toast.error('trouble login in through google')
-          
-            return console.log('trouble login in through google =>', err)
-        })
-    }
-
     return (
         access_token ? 
         <Navigate to="/" />
@@ -151,14 +128,7 @@ const UserAuthForm = ({ type }) => {
                        <p>or</p>
                        <hr className="w-1/2 border-black" />
                    </div>
-   
-                   <button
-                       className="btn-dark flex items-center justify-center gap-4 w-[90%] center"
-                       onClick={handleGoogleAuth}
-                   >
-                       <img src={google} className="w-5" />
-                       Continue with google
-                   </button>
+
                    {
                        type == "sign_in" ? 
                        <p className="mt-6 text-dark-grey text-xl text-center">
