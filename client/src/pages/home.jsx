@@ -5,6 +5,7 @@ import axios from "axios";
 import Loader from "../components/loader";
 import BlogPostCard from "../components/blogpostcard";
 import MinimalBlogPostCard from "../components/minimalblogpostcard";
+import NoDataMessage from "../components/nodata";
 
 const HomePage = () => {
 
@@ -89,14 +90,29 @@ const HomePage = () => {
                     
                         <>
                             {   
-                                blogs == null ? <Loader /> : 
-                                blogs.map((blog, i) => {
-                                        return  <AnimationWrapper key={i} transition={{ delay: i * 0.08 }} >
-                                            <BlogPostCard content={blog} author={blog.author.personal_info} />
-                                                </AnimationWrapper>
-                                        })    
-                            }
-                          
+                                blogs == null ? (
+                                 <Loader /> 
+                                ) : ( 
+                                blogs.length ?    
+                                    blogs.map((blog, i) => {
+                                        return ( 
+                                          <AnimationWrapper 
+                                            transition={{ 
+                                                duration: 1, delay: i * 0.08 
+                                            }}
+                                            key={i}  
+                                          >
+                                            <BlogPostCard 
+                                              content={blog} 
+                                              author={
+                                                blog.author.personal_info
+                                              } 
+                                            />
+                                            </AnimationWrapper>
+                                        );
+                                })  
+                                : <NoDataMessage message="No blogs published" />      
+                            )}
                         </>
                           
                     </InPageNavigation>
@@ -119,14 +135,28 @@ const HomePage = () => {
 
                 <div>
                     <h1 className="font-medium text-xl mb-8">Trending <i className="fi fi-rr-arrow-trend-up"></i></h1>
-                            {
-                                trendingBlogs == null ? <Loader /> :
-                                trendingBlogs.map((blog, i) => {
-                                            return <AnimationWrapper key={i}>
-                                                <MinimalBlogPostCard blog={blog} index={i} />
-                                                  </AnimationWrapper>
-                                        })
-                            }
+                    {   
+                                trendingBlogs == null ? (
+                                 <Loader /> 
+                                ) : ( 
+                                trendingBlogs.length ?    
+                                    trendingBlogs.map((blog, i) => {
+                                        return ( 
+                                          <AnimationWrapper 
+                                            transition={{ 
+                                                duration: 1, delay: i * 0.08 
+                                            }}
+                                            key={i}  
+                                          >
+                                           <MinimalBlogPostCard 
+                                             blog={blog} 
+                                             index={i} 
+                                            />
+                                          </AnimationWrapper>
+                                        );
+                                })  
+                                : <NoDataMessage message="No blogs published" />      
+                            )}
                 </div>
                </div>
              </div>

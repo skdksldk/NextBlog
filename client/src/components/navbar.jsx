@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate  } from 'react-router-dom';
 import logo from "../imgs/logo.png";
 import { UserContext } from "../App";
 import UserNavigationPanel from "./usernavigation";
@@ -11,6 +11,7 @@ const Navbar = () => {
 
   const { userAuth, userAuth: { access_token, profile_img, new_notifications_available }, setUserAuth } = useContext(UserContext);
 
+  let navigate = useNavigate();
  
   const handleClick = () => {
     setUserNavPanel(currentVal => !currentVal);
@@ -24,7 +25,7 @@ const Navbar = () => {
 
   const handleSearch = (e) => {
     let query = e.target.value;
-
+    // console.log(e)
     if(e.keyCode == 13 && query.length){ // enter key
         navigate(`/search/${query}`)
     }
