@@ -285,6 +285,41 @@ server.get("/trending-blogs", (req, res) => {
 
 })
 
+// done 
+server.post("/search-blogs", (req, res) => {
+
+    let { query, tag, page, author, limit, eliminate_blog } = req.body;
+
+    let findQuery;
+
+    if(query){
+        findQuery = { draft: false, title: new RegExp(query, 'i') }
+    }
+    else if(tag){
+        findQuery = { tags: tag, draft: false, blog_id: { $ne: eliminate_blog } }
+    }
+    else if(author){
+        findQuery = { author, draft: false }
+    }
+
+    let maxLimit = limit ? limit : 3;
+
+    Blog.find(findQuery)
+    .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
+    .select("blog_id title des banner activity tags publishedAt -_id")
+    .sort({ 'publishedAt': -1 })
+    .skip((page - 1) * maxLimit)
+    .limit(maxLimit)
+    .then(blogs => {
+        return res.status(200).json({ blogs })
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message })
+    })
+
+})
+
 
 server.listen(PORT, () => {
     console.log('listening on port -> ' + PORT)

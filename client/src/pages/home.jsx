@@ -25,6 +25,16 @@ const HomePage = () => {
         })
     }
 
+    const fetchBlogByCategory = () => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { tag: pageState })
+        .then(({ data }) => {
+           setBlogs(data.blogs);
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
     const fetchTrendingBlogs = () => {
         // latest blogs
         axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/trending-blogs")
@@ -42,7 +52,7 @@ const HomePage = () => {
 
         setBlogs(null);
 
-        if(pageState == category){
+        if(pageState === category){
             setPageState('home');
             return;
         }
@@ -54,11 +64,13 @@ const HomePage = () => {
     useEffect(() => {
 
         activeTabRef.current.click();
-      
-        if(pageState != "home"){
+
+        if(pageState === "home"){
             fetchLatestBlogs();
-        } 
-            
+        } else {
+            fetchBlogByCategory()
+        }
+
         if(!trendingBlogs){
             fetchTrendingBlogs();
         }
@@ -99,7 +111,7 @@ const HomePage = () => {
                             <div className="flex gap-3 flex-wrap">
                                 {
                                     categories.map((category, i) => {
-                                        return <button key={i} onClick={loadBlogbyCategory} className={"tag " + (pageState == category ? "bg-black text-white" : "")} >{category}</button>
+                                        return <button key={i} onClick={loadBlogbyCategory} className={"tag " + (pageState === category ? "bg-black text-white" : "")} >{category}</button>
                                     })
                                 }
                             </div>
