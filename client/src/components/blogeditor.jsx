@@ -24,14 +24,12 @@ const BlogEditor = () => {
     // let editorJS;
 
     useEffect(() => {
-      if(!textEditor.isReady){
         setTextEditor(new EditorJS({
             holderId: "textEditor",
             tools: tools,
             data: Array.isArray(content) ? content[0] : content,
             placeholder: "Let`s write an awesome story!",
         }))
-      }
     }, [])
 
     const handleBannerUpload = (e) => {

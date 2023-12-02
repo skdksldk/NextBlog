@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/navbar";
 import UserAuth from "./pages/userAuth";
 import { createContext, useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import EditProfile from "./pages/editprofile";
 import SideNav from "./components/sidenavbar";
 import ChangePassword from "./pages/changepassword";
 import BlogPage from "./pages/blog";
-
+import ManageBlogs from "./pages/manageblogs";
 
 export const UserContext = createContext([])
 
@@ -36,6 +36,10 @@ const App = () => {
         <Route path="/editor/:blog_id" element={<Editor />} />
         <Route path="/" element={<Navbar />}>
           <Route index  element={<HomePage />} />
+          <Route path="dashboard" element={<SideNav />}>
+              <Route index element={<Navigate to="blogs" />} />
+              <Route path="blogs" element={<ManageBlogs />} />
+          </Route>
           <Route path="signin" element={<UserAuth type="sign_in" />} />
           <Route path="signup" element={<UserAuth type="sign_up" />} />
           <Route path="user/:id" element={<ProfilePage />} />
