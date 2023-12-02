@@ -9,6 +9,7 @@ import { blogStructure } from "./editor";
 import { getDay } from "../common/date";
 import BlogInteraction from "../components/bloginteraction";
 import BlogPostCard from "../components/blogpostcard";
+import BlogContent from "../components/blogcontent";
 
 export const BlogPageContext = createContext({});
 
@@ -83,6 +84,19 @@ const BlogPage = () => {
                                 </div>
                                 <p className="text-dark-grey opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">Published on {getDay(publishedAt)}</p>
                             </div>
+                        </div>
+
+                        <BlogInteraction />
+
+                        {/* Blog Content */}
+                        <div className="my-12 font-gelasio blog-page-content">
+                        {
+                           content[0].blocks.map((block, i) => {
+                              return  <div key={i} className="my-4 md:my-8">
+                                        <BlogContent block={block} />
+                                      </div>
+                            })
+                        }
                         </div>
 
                         <BlogInteraction />
