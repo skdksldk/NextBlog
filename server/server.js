@@ -397,6 +397,38 @@ server.post('/get-profile', (req, res) => {
 
 })
 
+// done
+server.post("/get-blog", (req, res) => {
+
+    let { blog_id, draft, mode } = req.body;
+
+    let increamentVal = mode != 'edit' ? 1 : 0;
+
+    Blog.findOneAndUpdate({ blog_id }, { $inc : { "activity.total_reads": increamentVal }})
+    .populate("author", "personal_info.username personal_info.profile_img personal_info.fullname")
+    .select("title des content banner activity publishedAt blog_id tags draft")
+    .then(blog => {
+
+        User.findOneAndUpdate({ "personal_info.username" : blog.author.personal_info.username }, {
+            $inc : { "account_info.total_reads" : increamentVal }
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+
+        if(blog.draft && !draft){
+            return res.status(500).json({ error: 'you can not access draft blogs' })
+        }
+
+        return res.status(200).json({ blog })
+
+    }).catch(err => {
+        return res.status(500).json({ error: err.message });
+    })
+
+})
+
+
 
 server.listen(PORT, () => {
     console.log('listening on port -> ' + PORT)
