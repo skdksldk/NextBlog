@@ -19,6 +19,7 @@ const BlogPage = () => {
     const [ blog, setBlog ] = useState(blogStructure);
     const [ loading, setLoading ] = useState(true); 
     const [ similarBlogs, setSimilarBlogs ] = useState(null);
+    const [ likedByUser, setLikedByUser ] = useState(false);
 
     let { title, content, banner, author: { personal_info: { username: author_username, fullname, profile_img } }, publishedAt } = blog;
 
@@ -46,6 +47,7 @@ const BlogPage = () => {
     }, [blog_id]);
 
     const  resetPage = () => {
+        setLikedByUser(false);
         setBlog(blogStructure);
         setLoading(true);
         setSimilarBlogs(null);
@@ -58,7 +60,7 @@ const BlogPage = () => {
                 <Loader />
                 : title.length ? 
                 
-                <BlogPageContext.Provider value={{ blog, setBlog }}>
+                <BlogPageContext.Provider value={{ blog, setBlog, likedByUser, setLikedByUser }}>
 
                   
 

@@ -10,7 +10,7 @@ import User from './Schema/User.js';
 import aws from "aws-sdk";
 
 import Blog from './Schema/Blog.js';
-
+import Notification from './Schema/Notification.js';
 
 const server = express();
 const PORT = process.env.PORT || 3000;
@@ -429,6 +429,58 @@ server.post("/get-blog", (req, res) => {
 
 })
 
+server.post("/like-blog", verifyJWT, (req, res) => {
+    
+    let user_id = req.user;
+
+    let { _id, likedByUser } = req.body;
+
+    let increamentVal = !likedByUser ? 1 : -1;
+
+    Blog.findOneAndUpdate({ _id }, { $inc: { "activity.total_likes": increamentVal } })
+    .then(blog => {
+        User.findByIdAndUpdate({ _id: blog.author }, { $inc: { "account_info.total_likes": increamentVal } })
+        .then(data => { })
+        
+        if ( !likedByUser ) {
+                let like = new Notification({
+                    type: "like",
+                    blog: blog._id,
+                    notification_for: blog.author,
+                    user: user_id
+                })
+                
+                like.save().then(notification => {
+                    return res.json({ liked_by_user: true })
+                })
+        } else {
+
+            Notification.findOneAndDelete({ user: user_id, blog: _id, type: "like" })
+            .then(data => {
+                return res.json({ liked_by_user: false })
+            })
+
+        }
+
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+
+})
+
+server.post("/isliked-by-user", verifyJWT, (req, res) => {
+    let user_id = req.user;
+    let { blog_id } = req.body;
+
+    Notification.exists({ user: user_id, type: "like", blog: blog_id })
+    .then(result => {
+        return res.status(200).json({ result })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+})
 
 
 server.listen(PORT, () => {
