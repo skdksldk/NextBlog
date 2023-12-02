@@ -188,6 +188,7 @@ server.post('/signin', (req, res) => {
 
 // Blog routes
 
+
 server.post("/create-blog", verifyJWT, (req, res) => {
 
     let authorId = req.user;

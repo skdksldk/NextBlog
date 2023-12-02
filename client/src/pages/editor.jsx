@@ -1,9 +1,10 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../App";
-import { Navigate } from "react-router-dom";
 import BlogEditor from "../components/blogeditor";
 import PublishForm from "../components/publishform";
-import { createContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { UserContext } from "../App";
+import { Navigate, useParams } from "react-router-dom";
+import axios from "axios";
+import Loader from "../components/loader";
 
 export const blogStructure = {
     title: "",
@@ -18,18 +19,42 @@ export const EditorContext = createContext({});
 
 const Editor = () =>{
 
-    const [ blog, setBlog ] = useState(blogStructure);
+    let { blog_id } = useParams();
+
     const [ editorState, setEditorState ] = useState("editor");
-    const [ textEditor, setTextEditor] = useState({ isReady: false});
-    
+    const [ loading, setLoading ] = useState(true);
+    const [blog, setBlog] = useState(blogStructure);
+    const [textEditor, setTextEditor] = useState({ isReady: false });
+
     let { userAuth: { access_token } } = useContext(UserContext);
- 
+
+    useEffect(() => {
+
+        if(!blog_id){
+            return setLoading(false);
+        } 
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", { blog_id, draft: true, mode: 'edit' })
+        .then(({ data: { blog } }) => {
+            setBlog(blog);
+            setLoading(false);
+        })
+        .catch(() => {
+            setBlog(null);
+            setLoading(false);
+        });
+        
+    }, [])
+
+    
     return (
         <EditorContext.Provider value={{ editorState, setEditorState, blog, setBlog, textEditor, setTextEditor }}>
-        {
-        access_token === null ? <Navigate to="/signin" /> :
-            editorState == "editor" ? <BlogEditor /> : <PublishForm /> 
-        }
+            {
+                loading ? <Loader /> :
+                    blog === null ? <Navigate to="/page-not-found" /> :
+                        access_token === null ? <Navigate to="/signin" /> :
+                            editorState == "editor" ? <BlogEditor /> : <PublishForm /> 
+            }
         </EditorContext.Provider>
     )
 }
