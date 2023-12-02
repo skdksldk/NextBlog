@@ -363,6 +363,24 @@ server.post("/search-blogs", (req, res) => {
 
 })
 
+// done
+server.post("/search-users", (req, res) => {
+
+    let { query } = req.body;
+
+    User.find({ "personal_info.username": new RegExp(query, 'i') })
+    .sort({ publishedAt: -1 })
+    .limit(50)
+    .select("personal_info.fullname personal_info.username personal_info.profile_img -_id ")
+    .then(users => {
+        return res.status(200).json({ users })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message })
+    })
+
+})
+
 
 server.listen(PORT, () => {
     console.log('listening on port -> ' + PORT)
