@@ -13,6 +13,7 @@ import SideNav from "./components/sidenavbar";
 import ChangePassword from "./pages/changepassword";
 import BlogPage from "./pages/blog";
 
+
 export const UserContext = createContext([])
 
 const App = () => {
