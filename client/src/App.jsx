@@ -8,6 +8,8 @@ import HomePage from "./pages/home";
 import SearchPage from "./pages/search";
 import PageNotFound from "./pages/NotFound";
 import ProfilePage from "./pages/profile";
+import EditProfile from "./pages/editprofile";
+import SideNav from "./components/sidenavbar";
 
 export const UserContext = createContext([])
 
@@ -35,6 +37,9 @@ const App = () => {
           <Route path="user/:id" element={<ProfilePage />} />
           <Route path="search/:query" element={<SearchPage />} />
           <Route path="*" element={<PageNotFound />} />
+          <Route path="settings" element={<SideNav />}>
+              <Route path="edit-profile" element={<EditProfile />} />
+          </Route>
         </Route>
        </Routes>
       </UserContext.Provider>
