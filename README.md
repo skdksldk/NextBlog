@@ -35,6 +35,18 @@ nextblog는 Nextjs를 바탕으로 기존에 react로 배포했던 프로젝트�
 
 - 로그인과 마찬가지로 reponse를 받지 못할 경우 회원가입에 실패했다는 안내의 alert 처리를 해두었습니다.
 
+### 4. 글 작성
+
+![글 작성](https://github.com/skdksldk/nextblog/assets/85090323/5dad3b96-c2a9-4f68-973f-b06f68cfc2f3)
+
+![작성](https://github.com/skdksldk/nextblog/assets/85090323/7de49c40-71c4-4426-bb58-f97df5c44554)
+
+### 5. 프로필
+
+![프로필](https://github.com/skdksldk/nextblog/assets/85090323/064b0dc2-845a-4319-986f-c9e43c7d4ae4)
+
+
+
 ## 💡 nextblog를 코딩한 이유
 
 기존에 React와 Mongodb를 연계해 홈페이지를 만들어보았는데 데이터가 비대해져 홈페이지가 접속이 원활하게 이루어지 않았는데
