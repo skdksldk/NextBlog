@@ -10,6 +10,7 @@ import { getDay } from "../common/date";
 import BlogInteraction from "../components/bloginteraction";
 import BlogPostCard from "../components/blogpostcard";
 import BlogContent from "../components/blogcontent";
+import CommentsContainer, { fetchComments } from "../components/comments";
 
 export const BlogPageContext = createContext({});
 
@@ -20,6 +21,9 @@ const BlogPage = () => {
     const [ loading, setLoading ] = useState(true); 
     const [ similarBlogs, setSimilarBlogs ] = useState(null);
     const [ likedByUser, setLikedByUser ] = useState(false);
+    const [ commentWrapper, setCommentWrapper ] = useState(false);
+    const [ totalParentCommentsLoaded, setTotalParentCommentsLoaded ] = useState(0);
+
 
     let { title, content, banner, author: { personal_info: { username: author_username, fullname, profile_img } }, publishedAt } = blog;
 
@@ -30,7 +34,9 @@ const BlogPage = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", { blog_id })
         .then( async ({ data: { blog } }) => {
 
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { tag: blog.tags[0], limit: 6, eliminate_blog: blog_id })
+            blog.comments = await fetchComments({ blog_id: blog._id, setParentCommentCountFunc: setTotalParentCommentsLoaded });
+
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { tag: blog.tags[0], limit: 6, eliminate_blog: blog_id, setParentCommentCountFunc: setTotalParentCommentsLoaded })
             .then(({ data }) => {
                 setSimilarBlogs(data.blogs);
             })
@@ -51,6 +57,8 @@ const BlogPage = () => {
         setBlog(blogStructure);
         setLoading(true);
         setSimilarBlogs(null);
+        setCommentWrapper(false)
+        setTotalParentCommentsLoaded(0);
     }
 
     return (
@@ -60,9 +68,9 @@ const BlogPage = () => {
                 <Loader />
                 : title.length ? 
                 
-                <BlogPageContext.Provider value={{ blog, setBlog, likedByUser, setLikedByUser }}>
+                <BlogPageContext.Provider value={{ blog, setBlog, likedByUser, setLikedByUser, commentWrapper, setCommentWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded }}>
 
-                  
+                   <CommentsContainer />
 
                     <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
 
