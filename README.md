@@ -18,6 +18,9 @@ nextblog는 Nextjs를 바탕으로 기존에 react로 배포했던 프로젝트�
 
 ### 1. 메인페이지
 
+https://github.com/skdksldk/nextblog/assets/85090323/64984654-af4e-44cf-931d-6b18d799d3c4
+
+
 ![메인페이지](https://github.com/skdksldk/nextblog/assets/85090323/da51468e-1434-4b50-b1a0-5377e509ac1f)
 
 
