@@ -5,7 +5,7 @@ nextblog는 Nextjs를 바탕으로 기존에 react로 배포했던 프로젝트�
 - 자신이 만들었던 프로젝트들을 기록할수 있습니다.
 - mongo db를 이용하여 CRUD를 통해 로그인, 로그아웃, 글 삭제, 추가, 업데이트를 할 수 있습니다.
 - nextjs를 통해 서버 사이드 렌더링을 공부하게 되었고 tailwind css를 지원할수 있게 되었음을 알게 되었습니다..
-- [배포 링크](https://nextblog-sepia.vercel.app/)
+- [배포 링크](https://next13-dusky.vercel.app/)
 
 ### 🏃 구성원
 - Frontend<br/>
