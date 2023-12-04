@@ -13,6 +13,27 @@ nextblog는 Nextjs를 바탕으로 기존에 react로 배포했던 프로젝트�
   - 사용 기술 : `Next.js 13`, `React`, `TailwindCSS`, `Editorjs`, `framer-motion`
 - Backend<br/>
   - 사용 기술 : `Node.js`, `Express`, `AWS`, `Editorjs`
+ 
+## 🔎 기능 설명
+
+### 1. 메인페이지
+
+![메인페이지](https://github.com/skdksldk/nextblog/assets/85090323/da51468e-1434-4b50-b1a0-5377e509ac1f)
+
+
+### 2. 로그인
+
+![로그인](https://github.com/skdksldk/nextblog/assets/85090323/14dca12a-106b-4857-9bb8-edd376fb7248)
+
+
+- 로그인이 실했했을 경우 로그인에 실패했다는 안내의 alert 처리를 해두었습니다.
+
+### 3. 회원가입
+
+![회원가입](https://github.com/skdksldk/nextblog/assets/85090323/6d9dc540-ee03-45c3-b3f1-7024dcce7fd4)
+
+
+- 로그인과 마찬가지로 reponse를 받지 못할 경우 회원가입에 실패했다는 안내의 alert 처리를 해두었습니다.
 
 ## 💡 nextblog를 코딩한 이유
 
